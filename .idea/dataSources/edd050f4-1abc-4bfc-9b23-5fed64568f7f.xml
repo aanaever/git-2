@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<dataSource name="user@localhost">
+<dataSource name="users@localhost">
   <database-model serializer="dbm" dbms="MYSQL" family-id="MYSQL" format-version="4.19">
     <root id="1">
       <ServerVersion>8.0.22</ServerVersion>
@@ -22,9 +22,9 @@
     <schema id="6" parent="1" name="sys">
       <Collation>utf8mb4_0900_ai_ci</Collation>
     </schema>
-    <schema id="7" parent="1" name="user">
+    <schema id="7" parent="1" name="users">
       <Current>1</Current>
-      <Collation>utf8mb4_0900_ai_ci</Collation>
+      <Collation>utf8_general_ci</Collation>
     </schema>
     <schema id="8" parent="1" name="world">
       <Collation>utf8mb4_0900_ai_ci</Collation>
@@ -917,9 +917,7 @@ SELECT|sys.sys_config:null
       <ObjectGrants>SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,RELOAD,SHUTDOWN,PROCESS,FILE,REFERENCES,INDEX,ALTER,SHOW DATABASES,SUPER,CREATE TEMPORARY TABLES,LOCK TABLES,EXECUTE,REPLICATION SLAVE,REPLICATION CLIENT,CREATE VIEW,SHOW VIEW,CREATE ROUTINE,ALTER ROUTINE,CREATE USER,EVENT,TRIGGER,CREATE TABLESPACE!
 </ObjectGrants>
     </user>
-    <table id="286" parent="7" name="users">
-      <Collation>utf8_general_ci</Collation>
-    </table>
+    <table id="286" parent="7" name="user"/>
     <column id="287" parent="286" name="id">
       <Position>1</Position>
       <DataType>int|0s</DataType>

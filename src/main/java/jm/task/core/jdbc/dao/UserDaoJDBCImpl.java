@@ -9,23 +9,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserDaoJDBCImpl implements UserDao {
-    Connection connection;
+    Connection connection = Util.getConnection();
 
     public UserDaoJDBCImpl() {
-        Util util = new Util();
-        connection = util.getConnection();
+
     }
 
     @Override
     public void createUsersTable() {
         try {
-            String createTab = " CREATE TABLE `user`.`users` (" +
+            connection.createStatement().execute(" CREATE TABLE IF NOT EXISTS user (" +
                     "`id` INT NOT NULL AUTO_INCREMENT," +
                     "`name` VARCHAR(45) NOT NULL," +
                     "`lastName` VARCHAR(45) NOT NULL," +
                     "`age` INT NOT NULL," +
-                    "PRIMARY KEY (`id`))";
-            connection.createStatement().execute(createTab);
+                    "PRIMARY KEY (`id`))");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -34,8 +32,7 @@ public class UserDaoJDBCImpl implements UserDao {
     @Override
     public void dropUsersTable() {
         try {
-            String dropUser = "DROP TABLE IF EXISTS `user`.`users`";
-            connection.createStatement().execute(dropUser);
+            connection.createStatement().execute("DROP TABLE IF EXISTS user");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -44,7 +41,7 @@ public class UserDaoJDBCImpl implements UserDao {
     @Override
     public void saveUser(String name, String lastName, byte age) {
         try {
-            String saveUsers = "INSERT INTO `user`.`users` SET name = ?, lastName = ?, age = ?";
+            String saveUsers = "INSERT INTO user (name, lastName, age) VALUES (?, ?, ?)";
             PreparedStatement preparedStatement = connection.prepareStatement(saveUsers);
             preparedStatement.setString(1, name);
             preparedStatement.setString(2, lastName);
@@ -59,7 +56,7 @@ public class UserDaoJDBCImpl implements UserDao {
     @Override
     public void removeUserById(long id) {
         try {
-            String removeUserBy = "DELETE FROM `user`.`users` WHERE `id` = ?";
+            String removeUserBy = "DELETE FROM user WHERE (`id` = ?)";
             PreparedStatement preparedStatement = connection.prepareStatement(removeUserBy);
             preparedStatement.setLong(1, id);
             preparedStatement.execute();
@@ -72,10 +69,11 @@ public class UserDaoJDBCImpl implements UserDao {
     public List<User> getAllUsers() {
         List<User> list = new ArrayList<>();
         try {
-            String listAll = "SELECT * FROM `user`.`users`";
-            ResultSet resultSet = connection.createStatement().executeQuery(listAll);
+            ResultSet resultSet = connection.createStatement().executeQuery("SELECT * FROM user");
             while (resultSet.next()) {
-                list.add(new User(resultSet));
+                list.add(new User(resultSet.getString(2),
+                        resultSet.getString(3),
+                        (byte)resultSet.getInt(4)));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -86,8 +84,7 @@ public class UserDaoJDBCImpl implements UserDao {
     @Override
     public void cleanUsersTable() {
         try {
-            String clear = "TRUNCATE `user`.`users`";
-            connection.createStatement().execute(clear);
+            connection.createStatement().execute("TRUNCATE TABLE user");
         } catch (SQLException e) {
             e.printStackTrace();
         }
